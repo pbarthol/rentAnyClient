@@ -1,0 +1,44 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <app-header [headerID]='headerID'></app-header>
+</nav>
+
+<div *ngIf="headerID == 1" class="jumbotron ra-hero">
+  <div class="container ra-header-box">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <div class="ra-search-box">
+          <p>Wo möchtest du übernachten, arbeiten oder Party machen?</p>
+          <div class="form-group">
+            <input placeholder="Dein Wunschort" autocorrect="on" autocapitalize="on" spellcheck="off" type="text" class="form-control" #search [(formControl)]="searchControl" name="search">
+          </div>
+          <div class="ra-msg error">{{msgError}}</div>
+        </div>
+        <div class="ra-search-button">
+          <button type="button" class="btn btn-secondary" (click)="goPageList()"><i class="material-icons">search</i></button>
+        </div>
+
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container ra-container">
+  <div class="row">
+    <div class="col-md-4">
+      <app-accommodation-list [listParam]='listParam1' [accommodations]='accommodations1'></app-accommodation-list>
+    </div>
+    <div class="col-md-4">
+      <app-accommodation-list [listParam]='listParam2' [accommodations]='accommodations2'></app-accommodation-list>
+    </div>
+    <div class="col-md-4">
+      <app-accommodation-list [listParam]='listParam3' [accommodations]='accommodations3'></app-accommodation-list>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+  </div>
+</footer>

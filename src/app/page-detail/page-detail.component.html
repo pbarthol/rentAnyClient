@@ -1,0 +1,115 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <app-header [headerID]='headerID'></app-header>
+</nav>
+
+<div *ngIf="resultReady">
+<div class="jumbotron jumbotron-detail ra-hero-detail">
+  <div class="container ra-header-profil">
+    <div class="row">
+      <!--<div class="col-md-12"><a href="#"><img class="media-object ra-image-circle ra-image-profil" src="https://rentany-server.herokuapp.com/uploads/{{accommodation.ownerid}}.jpg"></a> <div class="col-md-10 ra-header-profil__username">{{accommodation.username}}</div>-->
+        <div class="col-md-12"><a href="#"><img class="media-object ra-image-circle ra-image-profil" src="http://localhost:8080/uploads/{{accommodation.ownerid}}.jpg"></a> <div class="col-md-10 ra-header-profil__username">{{accommodation.username}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container ra-container">
+  <div class="row">
+    <div class="col-md-8 ra-block">
+      <div class="ra-block__body">
+        <h1>{{accommodation.title}}</h1>
+        <div class="row">
+          <div class="cont cont-left">
+            <h3>{{room}}</h3>
+          </div>
+          <div class="cont cont-left cont-large">
+            <p><b>{{accommodation.town}}, {{accommodation.canton}}</b></p>
+            <p>{{accommodation.description}}</p>
+            <p>Platz für <b>{{accommodation.numberOfGuests}}</b> Personen</p>
+            <p *ngIf="accommodation.type == '1'"><b>{{accommodation.numberOfBathrooms}}</b> Badezimmer</p>
+            <p *ngIf="accommodation.type == '1'"><b>{{accommodation.numberOfBeds}}</b> Betten</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="cont cont-left">
+            <h3>Ausstattung</h3>
+          </div>
+          <div class="cont cont-left setting">
+            <ul>
+              <li *ngFor="let setLeft of settingsLeft"><i class="mdi mdi-{{setLeft.icon}}"></i>{{setLeft.name}}</li>
+            </ul>
+          </div>
+          <div class="cont cont-left setting">
+            <ul>
+              <li *ngFor="let setRight of settingsRight"><i class="mdi mdi-{{setRight.icon}}"></i>{{setRight.name}}</li>
+            </ul>
+          </div>
+        </div>
+
+        <!--<div *ngIf="accommodation.images > 0" class="ra-gallery__foto"><img src="https://rentany-server.herokuapp.com/uploads/{{accommodation._id}}_1.jpg" /><p><br /></p></div>-->
+        <div *ngIf="accommodation.images > 0" class="ra-gallery__foto"><img src="http://localhost:8080/uploads/{{accommodation._id}}_1.jpg" /><p><br /></p></div>
+
+        <div class="ra-block ra-map-detail">
+          <sebm-google-map [latitude]="accommodation.lat" [longitude]="accommodation.lng" [zoom]="zoom">
+            <sebm-google-map-marker  [latitude]="accommodation.lat" [longitude]="accommodation.lng" [iconUrl]="'/img/ra_marker.png'">
+              <sebm-google-map-info-window [isOpen]=false>
+                {{accommodation.title}}<br /><b>CHF {{accommodation.price}}</b>
+              </sebm-google-map-info-window>
+            </sebm-google-map-marker>
+          </sebm-google-map>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-4" style="padding-right: 0px">
+      <div class="ra-block ra-block__container">
+        <div *ngIf="!userIsLoggedIn">
+          <button (click)="login()" class="btn btn-default" type="submit"> Anfrage Buchung</button>
+        </div>
+        <div *ngIf="userIsLoggedIn">
+          <button (click)="modBookingRequest.open()" class="btn btn-default" type="submit"> Anfrage Buchung </button>
+          <modal #modBookingRequest>
+            <modal-header>
+              <h1>Anfrage Buchung</h1>
+            </modal-header>
+            <modal-content>
+              <div *ngIf="!alreadyBooked">
+                <p><app-booking></app-booking></p>
+              </div>
+              <div *ngIf="alreadyBooked">
+                Deine Anfrage ist in Bearbeitung.
+                Du wirst eine Nachricht erhalten.
+              </div>
+            </modal-content>
+            <modal-footer>
+              <button class="btn btn-default" (click)="modBookingRequest.close()">Schliessen</button>
+            </modal-footer>
+          </modal>
+        </div>
+
+        <div *ngIf="accommodation.images > 0" >
+          <div class="ra-gallery">
+            <!--<div *ngFor="let foto of fotos; let i = index" class="ra-gallery__thumb" (click)="openGallery(i+1); modGallery.open()"><img src="https://rentany-server.herokuapp.com/uploads/{{foto}}" /></div>-->
+            <div *ngFor="let foto of fotos; let i = index" class="ra-gallery__thumb" (click)="openGallery(i+1); modGallery.open()"><img src="http://localhost:8080/uploads/{{foto}}" /></div>
+        </div>
+
+        <modal #modGallery modalClass="modal-ra-gallery">
+          <modal-header>
+            <h1>{{accommodation.title}}</h1>
+          </modal-header>
+          <modal-content>
+            <!--<div *ngIf="fotonum > 0" class="ra-gallery__foto"><img src="https://rentany-server.herokuapp.com/uploads/{{accommodation._id}}_{{fotonum}}.jpg" /></div>-->
+            <div *ngIf="fotonum > 0" class="ra-gallery__foto"><img src="http://localhost:8080/uploads/{{accommodation._id}}_{{fotonum}}.jpg" /></div>
+          </modal-content>
+          <modal-footer>
+            <button class="btn btn-default" (click)="openGallery(fotonum-1)"> < </button> <button class="btn btn-default" (click)="openGallery(fotonum+1)"> > </button> <button class="btn btn-default" (click)="modGallery.close()">Schliessen</button>
+          </modal-footer>
+        </modal>
+      </div>
+      <br />
+      <button class="btn btn-default" type="submit"> Kontaktaufnahme </button>
+    </div>
+  </div>
+</div>

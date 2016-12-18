@@ -1,0 +1,36 @@
+<div class="col-md-12">
+  <div class="ra-block__body">
+    <!--Header-->
+    <div class="text-xs-center">
+      <h1><i class="fa fa-calendar"></i> Booking:</h1>
+      <!--<hr class="mt-2 mb-2">-->
+    </div>
+
+    <!--<div>Accommodation:</div>-->
+    <!--<div>{{newBooking.accommodation_id}}</div>-->
+    <!--<div>User:</div>-->
+    <!--<div>{{newBooking.user_id}}</div>-->
+    <input type="text" class="form-control fieldset__input js__datepicker picker__input" id="dateFrom" name="dateFrom" placeholder="Anreisedatum" [(ngModel)]="dateFrom">
+
+    <input type="text" class="form-control fieldset__input js__datepicker picker__input" id="dateTo" name="dateTo" placeholder="Abreisedatum" [(ngModel)]="dateTo">
+
+    <div *ngIf="errorMessage" class="ra-msg error">{{errorMessage}}</div>
+
+    <button id="openModalBookingOkButton" [hidden]="true" (click)="modBookingOk.open()">Open modal</button>
+    <modal #modBookingOk>
+      <modal-header>
+        <h1>Your Booking</h1>
+      </modal-header>
+      <modal-content>
+          Ihre Buchung ist in Bearbeitung.
+          Sie erhalten bald eine Bestätigung.
+      </modal-content>
+      <modal-footer>
+        <button (click)="closeBookingModal">Schliessen</button>
+      </modal-footer>
+    </modal>
+    <button id="closeModalBookingOkButton" [hidden]="true" (click)="modBookingOk.close()">Close modal</button>
+
+    <div><button [disabled]="loading" class="btn btn-primary"  (click)="book()">Buchen</button></div>
+  </div>
+</div>

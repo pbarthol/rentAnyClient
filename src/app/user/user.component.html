@@ -1,0 +1,96 @@
+
+<!--<form name="form" (ngSubmit)="f.form.valid && addUser()" #f="ngForm" novalidate>-->
+<form [formGroup]="userForm" novalidate>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-block">
+        <div class="text-xs-center">
+          <h2><i class="fa fa-user"></i>{{action}}</h2>
+        </div>
+
+        <!--Body-->
+        <div class="form-group">
+          <i class="fa fa-user prefix"></i>
+          <label for="username">Benutzername</label>
+          <input type="text" class="form-control" name="username" [(ngModel)]="user.username" formControlName="username"/>
+        </div>
+        <div class="ra-msg error" *ngIf="userForm.controls.username.hasError()">
+          Benutzername muss eingegeben werden!
+        </div>
+
+        <div class="form-group">
+          <i class="fa fa-envelope prefix"></i>
+          <label for="email">E-Mail</label>
+          <input type="text" class="form-control" name="email" [(ngModel)]="user.email" formControlName="email"/>
+        </div>
+        <div class="ra-msg error" *ngIf="userForm.controls.email.errors?.containsSigne">
+          Kein @ in der E-Mail!
+        </div>
+
+        <div *ngIf="newUser" class="form-group">
+          <i class="fa fa-lock prefix"></i>
+          <label formGroupName="passwords">Passwort<br />
+            <input type="password" formControlName="password"/>
+          </label>
+
+        </div>
+
+        <div *ngIf="newUser" class="form-group">
+          <i class="fa fa-lock prefix"></i>
+          <label formGroupName="passwords">Passwort wiederholen<br />
+            <input type="password" formControlName="passwordRepeat"/>
+          </label>
+        </div>
+        <div class="ra-msg error" *ngIf="userForm.controls.passwords.hasError('passwordsNotEqual')">
+          Die eingegebenen Passwörter stimmen nicht überein! Eingabe bitte wiederholen.
+        </div>
+
+        <div *ngIf="!newUser" class="form-group">
+          <img [src]='avatarURL()' alt="...">
+        </div>
+
+        <div class="form-group">
+          <input type="file" [disabled]="avatarAlreadyUploaded" ng2FileSelect [uploader]="uploader" name="user_image" (change)="onChange($event)"/>
+        </div>
+
+        <div *ngIf="!avatarAlreadyUploaded">
+          <tr  *ngFor="let item of uploader.queue">
+            <td><strong>{{ item?.file?.name }}</strong></td>
+            <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+            <td *ngIf="uploader.isHTML5">
+              <div class="progress" style="margin-bottom: 0;">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+              </div>
+            </td>
+            <td class="text-center">
+              <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+              <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+              <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+            </td>
+            <td nowrap>
+              <button type="button" class="btn btn-success btn-xs" enctype="multipart/form-data"
+                      (click)="onUpload()"
+                      name="user_image"
+                      [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                <span class="glyphicon glyphicon-upload"></span> Bild Upload
+              </button>
+            </td>
+          </tr>
+        </div>
+
+        <div class="form-group">
+          <div *ngIf="newUser" class="form-group">
+            <button [disabled]="loading" class="btn btn-default" (click)="addUser()">Speichern</button>
+            <!--<button [disabled]="loading" class="btn btn-primary" (click)="cancelUser()">Cancel</button>-->
+          </div>
+          <div *ngIf="!newUser" class="form-group">
+            <button [disabled]="loading" class="btn btn-default" (click)="updateUser()">Angaben ändern</button>
+            <a class="btn btn-link" (click)="openChangePasswordDialog()">Passwort wechseln</a>
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="ra-msg error">{{errorMessage}}</div>
+      </div>
+    </div>
+  </div>
+</form>

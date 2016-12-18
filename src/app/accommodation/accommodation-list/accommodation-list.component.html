@@ -1,0 +1,20 @@
+
+  <div *ngIf="listParam.listFilter" class="ra-block">
+    <div class="mdl-card__media ra-title-category">
+      <i class="material-icons">{{listParam.listIcon}}</i><p>{{listParam.listTitle}}</p>
+    </div>
+    <img *ngIf="listParam.listImage" src="{{listParam.listImage}}" class="ra-image">
+    <app-accommodation-teaser *ngFor="let accommodation of accommodations | roFilter:argFilter" [accommodation]="accommodation"></app-accommodation-teaser>
+  </div>
+  <div *ngIf="!listParam.listFilter" class="ra-block">
+    <div class="mdl-card__media ra-title-category">
+      <i class="material-icons">{{listParam.listIcon}}</i><p>{{listParam.listTitle}}</p>
+    </div>
+    <img *ngIf="listParam.listImage" src="{{listParam.listImage}}" class="ra-image">
+    <app-accommodation-teaser *ngFor="let accommodation of accommodations | roFilterHome:listParam.listID" [accommodation]="accommodation"></app-accommodation-teaser>
+  </div>
+
+
+
+
+

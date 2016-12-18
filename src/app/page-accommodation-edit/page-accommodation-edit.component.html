@@ -1,0 +1,325 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <app-header [headerID]='headerID'></app-header>
+</nav>
+
+<div class="container ra-container ra-section-edit">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="ra-block ra-block__body">
+
+        <h1>Neues Mietobjekt erfassen</h1>
+
+        <div class="btn-group" role="group" aria-label="typeFilter">
+          <button type="button" class="btn" [class.btn-default]="statObjDescription"  [disabled]="!statObjDescription" (click)="clButton(1)"> Mietobjekt beschreiben </button>
+          <button type="button" class="btn" [class.btn-default]="statObjAddress" [disabled]="!statObjAddress" (click)="clButton(2)"> Adresse erfassen </button>
+          <button type="button" class="btn"[class.btn-default]="statObjSettings" [disabled]="!statObjSettings" (click)="clButton(3)"> Ausstattung definieren </button>
+          <button type="button" class="btn" [class.btn-default]="statObjImages" [disabled]="!statObjImages" (click)="clButton(4)"> Fotos hinzufügen </button>
+        </div>
+
+        <form *ngIf="currentStep == 1" #f1="ngForm" (ngSubmit)="onSubmitEditAccomodation1(f1)">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="radioBtn">Um was für ein Mietobjekt handelt es sich?</label>
+              <div class="radio" *ngFor="let accType of accTypes; let i = index">
+                <label>
+                  <input type="radio" name="accommodationType" [value]="i+1" [(ngModel)]="objAccommodation.type">
+                  {{ accType }}
+                </label>
+              </div>
+
+              <p><br /></p>
+
+              <div class="form-group">
+                <label for="title">Titel</label>
+                <input type="text" id="title" name="title" class="form-control" [(ngModel)]="objAccommodation.title" required>
+              </div>
+
+              <div class="form-group">
+                <label for="description">Beschreibung</label>
+                <textarea id="description" name="description" class="form-control" [(ngModel)]="objAccommodation.description"></textarea>
+              </div>
+              <button type="submit" class="btn" [class.btn-default]="f1.valid" [disabled]="!f1.valid">weiter</button>
+            </div>
+
+            <div class="col-md-6" *ngIf="objAccommodation.type == 1">
+              <label class="radioBtn">Kategorie</label>
+              <div class="radio" *ngFor="let catT1 of accCategoriesT1; let i = index">
+                <label>
+                  <input type="radio" name="accommodationCategory1" [value]="catT1" [(ngModel)]="objAccommodation.category">
+                  {{ catT1 }}
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="objAccommodation.type == 2">
+              <label class="radioBtn">Kategorie</label>
+              <div class="radio" *ngFor="let catT2 of accCategoriesT2; let i = index">
+                <label>
+                  <input type="radio" name="accommodationCategory2" [value]="catT2" [(ngModel)]="objAccommodation.category">
+                  {{ catT2 }}
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="objAccommodation.type == 3">
+              <label class="radioBtn">Kategorie</label>
+              <div class="radio" *ngFor="let catT3 of accCategoriesT3; let i = index">
+                <label>
+                  <input type="radio" name="accommodationCategory3" [value]="catT3" [(ngModel)]="objAccommodation.category">
+                  {{ catT3 }}
+                </label>
+              </div>
+            </div>
+
+
+          </div>
+        </form>
+
+        <form *ngIf="currentStep == 2" #f2="ngForm" (ngSubmit)="onSubmitEditAccomodation2(f2)">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="ra-block ra-map-detail">
+                  <sebm-google-map [latitude]="latMap" [longitude]="lngMap" [zoom]="zoom" (mapClick)="mapClicked([$event.coords.lat,$event.coords.lng])">
+                    <sebm-google-map-marker  *ngFor="let m of markers; let i = index"
+                                             [latitude]="m.lat"
+                                             [longitude]="m.lng"
+                                             [markerDraggable]="true"
+                                             [iconUrl]="'/img/ra_marker.png'"
+                                             (dragEnd)="markerDragEnd(m, [$event.coords.lat,$event.coords.lng])">
+                    </sebm-google-map-marker>
+                  </sebm-google-map>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div *ngIf="!objAccommodation.town">
+                  <p class="ra-formDescription">Um eine Adresse zu erfassen, klicke in die Karte<br /> und ziehe den Marker an die gewünschte Stelle.</p>
+                </div>
+                <div *ngIf="objAccommodation.town > ''">
+                  <div class="form-group">
+                    <label>Adresse</label>
+                    <input type="text" id="adress" name="address" class="form-control" [(ngModel)]="objAccommodation.address" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Postleitzahl</label>
+                    <input type="text" id="zipcode" name="zipcode" class="form-control" [(ngModel)]="objAccommodation.zipcode" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Ort</label>
+                    <input type="text" id="town" name="town" class="form-control" [(ngModel)]="objAccommodation.town" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Kanton</label>
+                    <input type="text" id="canton" name="canton" class="form-control" [(ngModel)]="objAccommodation.canton" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Land</label>
+                    <input type="text" id="country" name="country" class="form-control" [(ngModel)]="objAccommodation.country" required>
+                  </div>
+                  <button type="submit" class="btn" [class.btn-default]="f2.valid" [disabled]="!f2.valid">weiter</button>
+                </div>
+              </div>
+            </div>
+        </form>
+
+        <form *ngIf="currentStep == 3" #f3="ngForm" (ngSubmit)="onSubmitEditAccomodation3(f3)">
+          <div class="row">
+            <div class="col-md-6">
+              <div style="clear:both;">
+                <div style="min-width: 300px; margin-top: 30px; float:left;">
+                  <label class="radioBtn">Max. Anzahl Gäste/Personen: </label> {{objAccommodation.numberOfGuests}}
+                </div>
+                <div style="float:left;"><button type="button" class="btn btn-default" (click)="calcField('numberOfGuests','+')"> + </button> <button type="button" class="btn btn-default" (click)="calcField('numberOfGuests','-')"> - </button></div>
+              </div>
+
+              <div *ngIf="objAccommodation.type == '1'" style="clear:both;">
+                <div style="min-width: 300px; margin-top: 30px; float:left;">
+                  <label class="radioBtn">Anzahl Betten: </label> {{objAccommodation.numberOfBeds}}
+                </div>
+                <div style="float:left;"><button type="button" class="btn btn-default" (click)="calcField('numberOfBeds','+')"> + </button> <button type="button" class="btn btn-default" (click)="calcField('numberOfBeds','-')"> - </button></div>
+              </div>
+
+              <div style="clear:both;">
+                <div style="min-width: 300px; margin-top: 30px; float:left;">
+                  <label class="radioBtn">Anzahl Toiletten: </label> {{objAccommodation.numberOfBathrooms}}
+                </div>
+                <div style="float:left;"><button type="button" class="btn btn-default" (click)="calcField('numberOfBathrooms','+')"> + </button> <button type="button" class="btn btn-default" (click)="calcField('numberOfBathrooms','-')"> - </button></div>
+              </div>
+
+              <div style="clear:both;"><button type="submit" class="btn" (click)="onSubmitEditAccomodation3(f3)" [class.btn-default]="f3.valid" [disabled]="!f3.valid || accommodationSaved">Mietobjekt speichern</button></div>
+              <div style="float:left;"><button type="button" class="btn btn-default" (click)="goToUpload()" [disabled]="!f3.valid">Fotos uploaden</button></div>
+            </div>
+
+            <div class="col-md-3" *ngIf="objAccommodation.type == '1'">
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.kitchen" (change)="selCheckboxSetting('kitchen')" [checked]="objAccommodation.setting.kitchen == 1"> Küche</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.washingmachine" (change)="selCheckboxSetting('washingmachine')" [checked]="objAccommodation.setting.washingmachine == 1"> Waschmaschine</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.dryer" (change)="selCheckboxSetting('dryer')" [checked]="objAccommodation.setting.dryer == 1"> Tumbler</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.dishwasher" (change)="selCheckboxSetting('dishwasher')" [checked]="objAccommodation.setting.dishwasher == 1"> Geschirrspüler</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.tv" (change)="selCheckboxSetting('tv')" [checked]="objAccommodation.setting.tv == 1"> TV</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.wlan" (change)="selCheckboxSetting('wlan')" [checked]="objAccommodation.setting.wlan == 1"> WLAN</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.balcony" (change)="selCheckboxSetting('balcony')" [checked]="objAccommodation.setting.balcony == 1"> Balkon/Terrasse</label>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="objAccommodation.type == '1'">
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.garden" (change)="selCheckboxSetting('garden')" [checked]="objAccommodation.setting.garden == 1"> Garten</label>
+              </div>
+              <div class="checkbox">
+              <label><input type="checkbox" [value]="objAccommodation.setting.elevator"  (change)="selCheckboxSetting('elevator')" [checked]="objAccommodation.setting.elevator == 1"> Lift</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.accesibility" (change)="selCheckboxSetting('accesibility')" [checked]="objAccommodation.setting.accesibility == 1"> rollstuhlgängig</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.view" (change)="selCheckboxSetting('view')" [checked]="objAccommodation.setting.view == 1"> Aussicht</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.parking" (change)="selCheckboxSetting('parking')" [checked]="objAccommodation.setting.parking == 1"> Parking</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.chimney" (change)="selCheckboxSetting('chimney')" [checked]="objAccommodation.setting.chimney == 1"> Cheminée/Ofen</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.pool" (change)="selCheckboxSetting('pool')" [checked]="objAccommodation.setting.pool == 1"> Pool</label>
+              </div>
+            </div>
+
+            <div class="col-md-3" *ngIf="objAccommodation.type == '2'">
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.wlan" (change)="selCheckboxSetting('wlan')" [checked]="objAccommodation.setting.wlan == 1"> WLAN</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.parking" (change)="selCheckboxSetting('parking')" [checked]="objAccommodation.setting.parking == 1"> Parkplatz/Parkhaus</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.accessibility" (change)="selCheckboxSetting('accessibility')" [checked]="objAccommodation.setting.accessibility == 1"> rollstuhlgängig</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.elevator" (change)="selCheckboxSetting('elevator')" [checked]="objAccommodation.setting.elevator  == 1"> Lift</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.privateoff" (change)="selCheckboxSetting('privateoff')" [checked]="objAccommodation.setting.privateoff == 1"> Einzelbüro</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.openoff" (change)="selCheckboxSetting('openoff')" [checked]="objAccommodation.setting.openoff == 1"> Grossraumbüro</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.meetingroom" (change)="selCheckboxSetting('meetingroom')" [checked]="objAccommodation.setting.meetingroom == 1"> Meetingroom</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.printer" (change)="selCheckboxSetting('printer')" [checked]="objAccommodation.setting.printer == 1"> Printer</label>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="objAccommodation.type == '2'">
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.cafeteria" (change)="selCheckboxSetting('cafeteria')" [checked]="objAccommodation.setting.cafeteria == 1"> Cafeteria/Snackbar</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.restaurant" (change)="selCheckboxSetting('restaurant')" [checked]="objAccommodation.setting.restaurant == 1"> Restaurant</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.kitchen" (change)="selCheckboxSetting('kitchen')" [checked]="objAccommodation.setting.kitchen  == 1"> Küche</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.toilettes" (change)="selCheckboxSetting('toilettes')" [checked]="objAccommodation.setting.toilettes == 1"> Toiletten</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.fitness" (change)="selCheckboxSetting('fitness')" [checked]="objAccommodation.setting.fitness == 1"> Fitnessstudio</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.reception " (change)="selCheckboxSetting('reception')" [checked]="objAccommodation.setting.reception  == 1"> Empfang/Reception</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.balcony" (change)="selCheckboxSetting('balcony')" [checked]="objAccommodation.setting.balcony == 1"> Balkon/Terrasse</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.view" (change)="selCheckboxSetting('view')" [checked]="objAccommodation.setting.view  == 1"> Aussicht</label>
+              </div>
+            </div>
+
+            <div class="col-md-3" *ngIf="objAccommodation.type == '3'">
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.wlan" (change)="selCheckboxSetting('wlan')" [checked]="objAccommodation.setting.wlan == 1"> WLAN</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.parking " (change)="selCheckboxSetting('parking')" [checked]="objAccommodation.setting.parking  == 1"> Parkplatz/Parkhaus</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.heater" (change)="selCheckboxSetting('heater')" [checked]="objAccommodation.setting.heater == 1"> Heizung</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.electricity " (change)="selCheckboxSetting('electricity')" [checked]="objAccommodation.setting.electricity  == 1"> Strom</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.toilettes" (change)="selCheckboxSetting('toilettes')" [checked]="objAccommodation.setting.toilettes == 1"> Toiletten</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.beamer" (change)="selCheckboxSetting('beamer')" [checked]="objAccommodation.setting.beamer == 1"> Beamer</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.bar" (change)="selCheckboxSetting('bar')" [checked]="objAccommodation.setting.bar == 1"> Bar</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.kitchen" (change)="selCheckboxSetting('kitchen')" [checked]="objAccommodation.setting.kitchen == 1"> Küche</label>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="objAccommodation.type == '3'">
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.dishes" (change)="selCheckboxSetting('dishes')" [checked]="objAccommodation.setting.dishes == 1"> Geschirr/Besteck</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.fridge" (change)="selCheckboxSetting('fridge')" [checked]="objAccommodation.setting.fridge == 1"> Kühlschrank</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.dishwasher" (change)="selCheckboxSetting('dishwasher')" [checked]="objAccommodation.setting.dishwasher == 1"> Geschirrspüler</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.grill" (change)="selCheckboxSetting('grill')" [checked]="objAccommodation.setting.grill == 1"> Feuerstelle/Grill</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.catering" (change)="selCheckboxSetting('catering')" [checked]="objAccommodation.setting.catering == 1"> Catering</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.dancefloor" (change)="selCheckboxSetting('dancefloor')" [checked]="objAccommodation.setting.dancefloor == 1"> Bühne/Tanzfläche</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.music" (change)="selCheckboxSetting('music')" [checked]="objAccommodation.setting.music == 1"> Musikanlage</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox" [value]="objAccommodation.setting.lightingsystem" (change)="selCheckboxSetting('lightingsystem')" [checked]="objAccommodation.setting.lightingsystem == 1"> Lichtanlage</label>
+              </div>
+            </div>
+
+          </div>
+        </form>
+
+        <form *ngIf="currentStep == 4" #f4="ngForm" (ngSubmit)="onSubmitEditAccomodation4(f4)">
+          <p><br /></p>
+          [ Bild-Upload ]
+          <p><br /></p>
+          <button type="submit" class="btn" [class.btn-default]="f4.valid" [disabled]="!f4.valid">speichern</button>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+  </div>
+</footer>

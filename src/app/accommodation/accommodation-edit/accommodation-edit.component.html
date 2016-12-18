@@ -1,0 +1,188 @@
+<div *ngIf="resultReady">
+  <form name="form" (ngSubmit)="f.form.valid && addAccommodation()" #f="ngForm" novalidate>
+    <div class="col-md-4 col-md-offset-4">
+      <!--Header-->
+      <div class="mdl-card__media ra-title-category">
+        <i class="material-icons">hotel</i><p>Edit Accommodation</p>
+      </div>
+
+      <!--Body-->
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !title.valid }">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" name="title" [(ngModel)]="accommodation.title" #title="ngModel" required />
+        <div class="ra-msg error" *ngIf="f.submitted && !title.valid" class="help-block">Title is required</div>
+      </div>
+
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !description.valid }">
+        <label for="description">Description</label>
+        <input type="text" class="form-control" name="description" [(ngModel)]="accommodation.description" #description="ngModel" required />
+        <div class="ra-msg error" *ngIf="f.submitted && !description.valid" class="help-block">Description is required</div>
+      </div>
+
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !zipcode.valid }">
+        <label for="zipcode">Zipcode</label>
+        <input type="text" class="form-control" name="zipcode" [(ngModel)]="accommodation.zipcode" #zipcode="ngModel" required />
+        <div class="ra-msg error" *ngIf="f.submitted && !zipcode.valid" class="help-block">Zipcode is required</div>
+      </div>
+
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !town.valid }">
+        <label for="town">Town:</label>
+        <input type="text" class="form-control" name="town" [(ngModel)]="accommodation.town" #town="ngModel" required />
+        <div class="ra-msg error" *ngIf="f.submitted && !town.valid" class="help-block">Town is required</div>
+      </div>
+
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !canton.valid }">
+        <label for="canton">Canton</label>
+        <input type="text" class="form-control" name="canton" [(ngModel)]="accommodation.canton" #canton="ngModel" required />
+        <div class="ra-msg error" *ngIf="f.submitted && !canton.valid" class="help-block">Canton is required</div>
+      </div>
+
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !country.valid }">
+        <label for="country">Country</label>
+        <input type="text" class="form-control" name="country" [(ngModel)]="accommodation.country" #country="ngModel" required />
+        <div class="ra-msg error" *ngIf="f.submitted && !country.valid" class="help-block">Country is required</div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Type</label>
+        <div class="col-lg-10">
+          <div class="radio">
+            <label>
+              <input type="radio"
+                     name="optionsRadios"
+                     value=1
+                     checked=""
+                     [(ngModel)]="accommodation.type">
+              Unterkunft
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio"
+                     name="optionsRadios"
+                     value=2
+                    [(ngModel)]="accommodation.type">
+              Buero
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio"
+                     name="optionsRadios"
+                     value=3
+                     [(ngModel)]="accommodation.type">
+              Partylocation
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label>Number of Guests</label>
+        <div>
+          <input type="number"
+                 name="points"
+                 min="1"
+                 max="100"
+                 step="1"
+                 value="2"
+                 [(ngModel)]="accommodation.numberOfGuests">
+        </div>
+      </div>
+
+      <div>
+        <label>Price</label>
+        <div>
+          <input type="number"
+                 name="points"
+                 min="10"
+                 max="1000"
+                 step="10"
+                 value="20"
+                 [(ngModel)]="accommodation.price">
+        </div>
+      </div>
+
+      <div *ngIf="accommodation.type == 1">
+        <label>Number of Beds:</label>
+        <div>
+          <input type="number"
+                 name="points"
+                 min="1"
+                 max="20"
+                 step="1"
+                 value="1"
+                 [(ngModel)]="accommodation.numberOfBeds">
+        </div>
+      </div>
+
+      <div>
+        <label>Number of Bathrooms:</label>
+        <div>
+          <input type="number"
+                 name="points"
+                 min="1"
+                 max="10"
+                 step="1"
+                 value="1"
+                 [(ngModel)]="accommodation.numberOfBathrooms">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="file" [disabled]="imagesAlreadyUploaded" ng2FileSelect [uploader]="uploader" multiple  name="accommodation_images" (change)="onChange($event)"/>
+      </div>
+
+      <!--<div *ngIf="!imagesAlreadyUploaded">-->
+        <tr  *ngFor="let item of uploader.queue">
+          <td><strong>{{ item?.file?.name }}</strong></td>
+          <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+          <td *ngIf="uploader.isHTML5">
+            <div class="progress" style="margin-bottom: 0;">
+              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+            </div>
+          </td>
+          <td class="text-center">
+            <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+            <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+            <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+          </td>
+          <td nowrap>
+            <button type="button" class="btn btn-success btn-xs" enctype="multipart/form-data"
+                    (click)="onUpload()"
+                    name="accommodation_images"
+                    [disabled]="item.isReady || item.isUploading || item.isSuccess">
+              <span class="glyphicon glyphicon-upload"></span> Upload
+            </button>
+            <button type="button" class="btn btn-success btn-s"
+                    (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+              <span class="glyphicon glyphicon-upload"></span> Upload all
+            </button>
+          </td>
+        </tr>
+      <!--</div>-->
+
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">Save</button>
+        <button [disabled]="loading" class="btn btn-primary" (click)="book()">Book</button>
+
+        <!--<a [routerLink]="['/booking', _id]">link to booking</a>-->
+
+        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+      </div>
+      <div *ngIf="error" class="ra-msg error">{{error}}</div>
+    </div>
+  </form>
+</div>
+
+<!--<div *ngIf="resultReady">-->
+
+  <!--<p>-->
+    <!--<input type="text" [(ngModel)]="accommodation.title"/>-->
+  <!--</p>-->
+  <!--<p>-->
+    <!--<input type="text" [(ngModel)]="accommodation.description_short"/>-->
+  <!--</p>-->
+<!--</div>-->
+<!--<button (click)="addAccommodation()">Save</button>-->
+

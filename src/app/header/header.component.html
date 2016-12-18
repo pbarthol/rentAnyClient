@@ -1,0 +1,67 @@
+<!-- Fixed navbar -->
+
+  <div class="container ra-container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <span class="ra-title mdl-layout-title">
+        <!--<a [routerLink] = "['/']"><img class="logo-rentany" src="http://localhost:8080/uploads/images/logo_rentany.png"></a>-->
+        <a [routerLink] = "['/']">
+          <img class="logo-rentany" src="/img/logo_rentany.png">
+        </a>
+      </span>
+    </div>
+    <div  id="navbar" class="navbar-collapse collapse">
+      <ul *ngIf="!userIsLoggedIn" class="nav navbar-nav  navbar-right">
+        <li><a (click)="register()">Registrieren</a></li>
+        <li><a (click)="login()">Login</a></li>
+      </ul>
+      <ul *ngIf="userIsLoggedIn" class="nav navbar-nav  navbar-right">
+        <li>
+          <div class="dropdown">
+            <a class="btn btn-default dropdown-toggle nav navbar-nav  navbar-right" type="button" data-toggle="dropdown"> Mein Account  <span class="caret"></span></a>
+            <ul class="dropdown-menu navbar-right">
+              <li><a (click)="editUser()">Account</a></li>
+              <li><a (click)="showBookings()">Meine Buchungen</a></li>
+              <li><a [routerLink]="['/accommodation-edit']" routerLinkActive="active">Mietobjekt erfassen</a></li>
+              <li><a (click)="showOwnerAccommodations()">Meine Angebote</a></li>
+              <li class="divider"></li>
+              <li><a (click)="logout()">Abmelden</a></li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!--</div>-->
+  <!-- // Header Page List -->
+  <div *ngIf="headerID == 2"  class="container ra-container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="ra-search-box-small">
+          <p>Wo möchtest du übernachten, arbeiten oder Party machen?</p>
+          <form>
+            <input type="text" name="search">
+
+          </form>
+        </div>
+
+        <div class="ra-search-button-small">
+          <i class="material-icons">search</i>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="btn-group ra-filtermap-switcher" role="group" aria-label="typeFilter">
+          <button type="button" class="btn btn-default" [class.btn-success]="btnSuccess0" (click)="clButton(0)"><i class="material-icons" value=''>filter_list</i></button>
+          <button type="button" class="btn btn-default" [class.btn-success]="btnSuccess1" (click)="clButton(1)"><i class="material-icons" value='1'>place</i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+

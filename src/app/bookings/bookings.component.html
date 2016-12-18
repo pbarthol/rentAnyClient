@@ -1,0 +1,18 @@
+<p>
+  bookings works!
+</p>
+<div class="row" *ngFor="let booking of bookings">
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="..." alt="...">
+      <div class="caption">
+        <!--<h3>{{accommodation.tit
+        le}}</h3>-->
+        <p>{{booking.from_date}}</p>
+        <p>{{booking.to_date}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<p><a role="button" [routerLink]="['../accommodationlist']" routerLinkActive="active"> Back</a> </p>
+<router-outlet></router-outlet>

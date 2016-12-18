@@ -1,0 +1,75 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <app-header [headerID]='headerID' [locationTown]='locationTown' (dataChange)="onDataChange($event)"></app-header>
+  <div *ngIf="pageListParam == 'filter' || pageListParam == 'both'" class="row ra-filterblock">
+      <div class="ra-block ra-filter col-md-3">
+        <h3>Was für ein Objekt suchst du?</h3>
+        <div class="btn-group" role="group" aria-label="typeFilter">
+          <button type="button" class="btn btn-default" [class.btn-success]="btnSuccess0" [disabled]="btnSuccess0" (click)="clButton(0)"><i class="material-icons" value=''>reorder</i></button>
+          <button type="button" class="btn btn-default" [class.btn-success]="btnSuccess1" [disabled]="btnSuccess1" (click)="clButton(1)"><i class="material-icons" value='1'>hotel</i></button>
+          <button type="button" class="btn btn-default" [class.btn-success]="btnSuccess2" [disabled]="btnSuccess2" (click)="clButton(2)"><i class="material-icons" value='2'>computer</i></button>
+          <button type="button" class="btn btn-default" [class.btn-success]="btnSuccess3" [disabled]="btnSuccess3" (click)="clButton(3)"><i class="material-icons" value='3'>local_bar</i></button>
+        </div>
+        <!--<p>Mietobjekt Typ: <b>{{listParam.listTitle}}</b></p>-->
+
+      </div>
+      <div class="ra-block ra-filter col-md-3">
+
+        <h3>Anzahl Gäste</h3>
+        <div class="sl-input">
+          <input [(ngModel)] = ["objectFilter.numberOfGuestsFrom","objectFilter.numberOfGuestsTo"] />
+        </div>
+        <div id="sl-guest" class="slider"></div>
+        <p class="ra-filter-label"><b>{{objectFilter.numberOfGuestsFrom}}</b> bis <b>{{objectFilter.numberOfGuestsTo}}</b></p>
+
+      </div>
+      <div class="ra-block ra-filter col-md-3">
+
+        <h3>Preisspanne</h3>
+        <div class="sl-input">
+          <input [(ngModel)] = ["objectFilter.priceFrom","objectFilter.priceTo"] />
+        </div>
+        <div id="sl-price" class="slider"></div>
+        <p>CHF <b>{{objectFilter.priceFrom}}</b> bis <b>{{objectFilter.priceTo}}</b></p>
+
+      </div>
+      <div class="ra-block ra-filter col-md-3">
+
+        <h3>Umkreis {{locationTown}}</h3>
+        <div class="sl-input">
+          <input [(ngModel)] ="objectFilter.radius" />
+        </div>
+        <div id="sl-radius" class="slider"></div>
+        <p>Radius: <b>{{objectFilter.radius}} km</b></p>
+
+      </div>
+  </div>
+</nav>
+
+<div class="container ra-container ra-section-list" [style.margin-top.px]="mtop">
+
+  <div class="row">
+    <div class="{{colModRight}} col-filtermap">
+      <div *ngIf="pageListParam == 'map' || pageListParam == 'both'">
+        <div class="ra-block ra-filter ra-map" [style.top.px]="mtop">
+          <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [style.height.px]="mapHeight">
+            <sebm-google-map-marker *ngFor="let accommodation of accommodations | roFilter:argFilter" [latitude]="accommodation.lat" [longitude]="accommodation.lng" [iconUrl]="getMarkerURL(accommodation.sel)" [zIndex]="(accommodation.sel)?99:1" (markerClick)="doMarkerLink(accommodation._id)">
+              <sebm-google-map-info-window [isOpen]=accommodation.sel>
+                {{accommodation.title}}<br /><b>CHF {{accommodation.price}}</b>
+              </sebm-google-map-info-window>
+            </sebm-google-map-marker>
+          </sebm-google-map>
+        </div>
+      </div>
+    </div>
+
+    <div class="{{colModLeft}} col-list">
+      <app-accommodation-list [listParam]='listParam' [accommodations]='accommodations' [arrFilter]='arrFilter'></app-accommodation-list>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+  </div>
+</footer>

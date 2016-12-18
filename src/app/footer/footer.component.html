@@ -1,0 +1,49 @@
+<!--<footer class="footer">-->
+<div>
+  <!--<div *ngIf="userIsLogging">-->
+    <button id="openModalLoginButton" [hidden]="true" (click)="modLogin.open()">Open modal</button>
+    <modal #modLogin>
+      <modal-header>
+      </modal-header>
+      <modal-content>
+        <p><app-logincomponent></app-logincomponent></p>
+      </modal-content>
+      <modal-footer>
+        <!--<button class="btn btn-default" (click)="closeLogin()">Schliessen</button>-->
+        <button class="btn btn-default" (click)="modLogin.close()">Schliessen</button>
+      </modal-footer>
+    </modal>
+    <!--<button id="closeModalLoginButton" [hidden]="true" (click)="modLogin.close()">Open modal</button>-->
+  <!--</div>-->
+
+  <!--<div *ngIf="registeringStarted">-->
+    <button id="openModalRegisterButton" [hidden]="true" (click)="modRegister.open()">Open modal</button>
+    <modal #modRegister>
+      <modal-header>
+        <!--Title in app-user, different in case of register and edit user data-->
+      </modal-header>
+      <modal-content>
+        <p><app-user></app-user></p>
+      </modal-content>
+      <modal-footer>
+        <button class="btn btn-default" (click)="closeRegister()">Schliessen</button>
+      </modal-footer>
+    </modal>
+    <button id="closeModalRegisterButton" [hidden]="true" (click)="modRegister.close()">Open modal</button>
+  <!--</div>-->
+
+  <button id="openModalChangePWDButton" [hidden]="true" (click)="modChangePassword.open()">Open modal</button>
+  <modal #modChangePassword>
+    <modal-header>
+      <h1>Passwort ändern</h1>
+    </modal-header>
+    <modal-content>
+      <p><app-passwordchange></app-passwordchange></p>
+    </modal-content>
+    <modal-footer>
+      <button class="btn btn-default" (click)="closeChangePassword()">Schliessen</button>
+    </modal-footer>
+  </modal>
+  <button id="closeModalChangePWDButton" [hidden]="true" (click)="modChangePassword.close()">Open modal</button>
+</div>
+<!--</footer>-->

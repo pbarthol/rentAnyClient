@@ -1,0 +1,16 @@
+<div class="media" [class.media-selected]="accommodation.sel" (mouseover)="mouseoverButton()" (mouseout)="mouseoutButton()">
+  <div class="media-left">
+    <a href="#" data-placement="bottom" data-toggle="tooltip" href="#" title="{{accommodation.username}}"><img class="media-object ra-image-circle ra-avatar" src="http://localhost:8080/uploads/{{accommodation.ownerid}}.jpg"></a>
+  </div>
+  <div class="media-body">
+    <h3 class="media-heading">{{accommodation.title}}</h3>
+    {{accommodation.category}} / {{accommodation.town}}, {{accommodation.canton}}
+    <span *ngIf="distance>0">&ndash; <span class="green">{{accommodation.distance}} km von {{refTown}} entfernt</span></span>
+    <p><span class="media-price"><b>CHF {{accommodation.price}}</b></span></p>
+
+  </div>
+  <div class="media-right">
+    <a [routerLink] = "['/accommodation',accommodation.id]"><img class="media-object ra-teaser-image" src="{{accommodation.thumbnail}}"></a>
+  </div>
+
+</div>
