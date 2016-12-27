@@ -17,11 +17,12 @@ var AccommodationPipe = (function () {
         var filterNumberOfGuestsTo = filterStrings[2];
         var filterPriceFrom = filterStrings[3];
         var filterPriceTo = filterStrings[4];
+        var filterDistance = filterStrings[5];
         if (filterType == '') {
-            return items.filter(function (item) { return (item.price >= filterPriceFrom) && (item.price <= filterPriceTo) && (item.numberOfGuests >= filterNumberOfGuestsFrom) && (item.numberOfGuests <= filterNumberOfGuestsTo); });
+            return items.filter(function (item) { return (item.price >= filterPriceFrom) && (item.price <= filterPriceTo) && (item.numberOfGuests >= filterNumberOfGuestsFrom) && (item.numberOfGuests <= filterNumberOfGuestsTo) && (item.distance <= filterDistance); });
         }
         else {
-            return items.filter(function (item) { return (item.type == filterType) && (item.price >= filterPriceFrom) && (item.price <= filterPriceTo) && (item.numberOfGuests >= filterNumberOfGuestsFrom) && (item.numberOfGuests <= filterNumberOfGuestsTo); });
+            return items.filter(function (item) { return (item.type == filterType) && (item.price >= filterPriceFrom) && (item.price <= filterPriceTo) && (item.numberOfGuests >= filterNumberOfGuestsFrom) && (item.numberOfGuests <= filterNumberOfGuestsTo) && (item.distance <= filterDistance); });
         }
     };
     AccommodationPipe = __decorate([

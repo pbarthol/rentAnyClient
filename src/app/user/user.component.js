@@ -27,7 +27,6 @@ var UserComponent = (function () {
         this.avatarAlreadyUploaded = false;
         this.action = "";
         this.errorMessage = '';
-        this.itemalias = '';
         // public uploader:FileUploader = new FileUploader({url: 'https://rentany-server.herokuapp.com/upload', queueLimit: 1});
         this.uploader = new ng2_file_upload_1.FileUploader({ url: 'http://localhost:8080/upload', queueLimit: 1 });
         this.userForm = builder.group({
@@ -59,7 +58,9 @@ var UserComponent = (function () {
         });
     }
     UserComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.errorMessage = "";
+        this.registered = false;
         var rentAnyUser = JSON.parse(sessionStorage.getItem('rentAnyUser'));
         if (rentAnyUser === undefined || rentAnyUser === null) {
             // New User
@@ -70,17 +71,26 @@ var UserComponent = (function () {
         else {
             // User already registered -> Edit User Data
             this.id = rentAnyUser.userid;
-            this.getUser();
-            this.action = "Benutzerdaten ändern";
-            this.newUser = false;
+            this.userService.getUser(this.id)
+                .subscribe(function (user) {
+                // console.log("User neu geladen")
+                _this.user = user;
+                _this.action = "Benutzerdaten ändern";
+                _this.newUser = false;
+            }, function (error) {
+                _this.errorMessage = error;
+            });
         }
     };
     UserComponent.prototype.addUser = function () {
         var _this = this;
         if (this.userForm.valid) {
-            this.userService.addUser(this.user).subscribe(function (x) { return console.log(x); }, function (error) {
-                _this.errorMessage = error;
-            });
+            this.user.password = this.userForm.value.passwords['password'];
+            this.userService.addUser(this.user)
+                .subscribe(function (x) {
+                console.log(x);
+                _this.registered = true;
+            }, function (error) { return _this.errorMessage = error; });
         }
     };
     UserComponent.prototype.updateUser = function () {

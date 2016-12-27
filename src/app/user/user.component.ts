@@ -21,16 +21,16 @@ const URL = 'http://localhost:8080/upload';
 
 export class UserComponent implements OnInit {
 
-  userForm: FormGroup;
+  private userForm: FormGroup;
   private id: string;
-  user: any = {};
-  loading = false;
-  newUser = false;
-  avatarAlreadyUploaded = false;
+  private registered: boolean;
+  private user: any = {};
+  private loading = false;
+  private newUser = false;
+  private avatarAlreadyUploaded = false;
   private action: string = "";
-  public avatar: SafeStyle;
-  errorMessage: string = '';
-  itemalias: string = '';
+  private avatar: SafeStyle;
+  private errorMessage: string = '';
 
   // public uploader:FileUploader = new FileUploader({url: 'https://rentany-server.herokuapp.com/upload', queueLimit: 1});
   public uploader:FileUploader = new FileUploader({url: 'http://localhost:8080/upload', queueLimit: 1});
@@ -75,6 +75,7 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     this.errorMessage = "";
+    this.registered = false;
     let rentAnyUser = JSON.parse(sessionStorage.getItem('rentAnyUser'));
     if (rentAnyUser === undefined || rentAnyUser === null ) {
       // New User
@@ -85,16 +86,31 @@ export class UserComponent implements OnInit {
     else {
       // User already registered -> Edit User Data
       this.id = rentAnyUser.userid;
-      this.getUser();
-      this.action = "Benutzerdaten ändern"
-      this.newUser = false;
+      this.userService.getUser(this.id)
+        .subscribe( user => {
+            // console.log("User neu geladen")
+            this.user=user;
+            this.action = "Benutzerdaten ändern"
+            this.newUser = false;
+          },
+          error => {
+            this.errorMessage=error
+          }
+        );
+
+      // this.getUser();
     }
   }
 
   addUser() {
     if (this.userForm.valid) {
-      this.userService.addUser(this.user).subscribe(x => console.log(x),
-        error => this.errorMessage = error
+      this.user.password = this.userForm.value.passwords['password'];
+      this.userService.addUser(this.user)
+        .subscribe(x => {
+            console.log(x);
+            this.registered = true;
+          }
+          ,error => this.errorMessage = error
       );
     }
   }

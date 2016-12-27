@@ -7,11 +7,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var core_1 = require('@angular/core');
 var PageAccommodationEditComponent = (function () {
-    function PageAccommodationEditComponent(route, router, accommodationService, addressService) {
+    function PageAccommodationEditComponent(route, router, accommodationService, addressService, sharedService) {
+        var _this = this;
         this.route = route;
         this.router = router;
         this.accommodationService = accommodationService;
         this.addressService = addressService;
+        this.sharedService = sharedService;
         this.progress = 0;
         this.response = {};
         this.accommodations = [];
@@ -24,8 +26,10 @@ var PageAccommodationEditComponent = (function () {
         this.headerID = 3;
         this.zoom = 8;
         this.clicked = 0;
+        this.subscription = sharedService.userIsLoggedIn$.subscribe(function (loggedIn) { return _this.userIsLoggedIn = loggedIn; });
     }
     PageAccommodationEditComponent.prototype.ngOnInit = function () {
+        this.accommodationSaved = false;
         this.statObjDescription = true;
         this.statObjAddress = false;
         this.statObjSettings = false;
@@ -36,7 +40,55 @@ var PageAccommodationEditComponent = (function () {
         this.accCategoriesT2 = ['Büro', 'Atelier', 'Praxis', 'Coworking Space', 'Gewerberaum', 'Ladenlokal', 'Pop-up Store', 'Lagerhalle', 'Werkstatt', 'Andere'];
         this.accCategoriesT3 = ['Partyraum', 'Seminarraum', 'Kursraum', 'Festhütte', 'Festzelt', 'Event Location', 'Waldhütte', 'Andere'];
         this.objAccommodation.type = 1;
+        var lsUser = sessionStorage.getItem('rentAnyUser');
+        if (lsUser != null) {
+            this.userId = JSON.parse(lsUser).userid;
+        }
+        console.log('1 - numberOfGuests: ', this.objAccommodation.numberOfGuests);
+        console.log('1 - numberOfBeds: ', this.objAccommodation.numberOfBeds);
+        console.log('1 - numberOfBathrooms: ', this.objAccommodation.numberOfBathrooms);
         this.objAccommodation.numberOfGuests = 0;
+        this.objAccommodation.numberOfBeds = 0;
+        this.objAccommodation.numberOfBathrooms = 0;
+        this.objAccommodation.setting = {
+            "kitchen": 0,
+            "washingmachine": 0,
+            "dryer": 0,
+            "dishwasher": 0,
+            "tv": 0,
+            "wlan": 0,
+            "balcony": 0,
+            "garden": 0,
+            "elevator": 0,
+            "accessibility": 0,
+            "view": 0,
+            "parking": 0,
+            "chimney": 0,
+            "pool": 0,
+            "privateoff": 0,
+            "openoff": 0,
+            "meetingroom": 0,
+            "printer": 0,
+            "cafeteria": 0,
+            "restaurant": 0,
+            "toilettes": 0,
+            "fitness": 0,
+            "reception": 0,
+            "heater": 0,
+            "electricity": 0,
+            "beamer": 0,
+            "bar": 0,
+            "dishes": 0,
+            "fridge": 0,
+            "grill": 0,
+            "catering": 0,
+            "dancefloor": 0,
+            "music": 0,
+            "lightingsystem": 0
+        };
+        console.log('2 - numberOfGuests: ', this.objAccommodation.numberOfGuests);
+        console.log('2 - numberOfBeds: ', this.objAccommodation.numberOfBeds);
+        console.log('2 - numberOfBathrooms: ', this.objAccommodation.numberOfBathrooms);
         // coords of Sachseln, Center of CH
         this.latMap = 46.867160;
         this.lngMap = 8.239378;
@@ -188,6 +240,15 @@ var PageAccommodationEditComponent = (function () {
                 break;
         }
     };
+    PageAccommodationEditComponent.prototype.goToUpload = function () {
+        this.currentStep = 4;
+        this.statObjImages = true;
+    };
+    PageAccommodationEditComponent.prototype.selCheckboxSetting = function (value) {
+        this.objAccommodation.setting[value] = (this.objAccommodation.setting[value] === 0) ? 1 : 0;
+        console.log('111 checkbox setting / ', value, ' - ', this.objAccommodation.setting[value]);
+        console.log('222 checkbox setting / ', value, ' - ', this.objAccommodation.setting.kitchen);
+    };
     PageAccommodationEditComponent.prototype.onSubmitEditAccomodation1 = function (form) {
         console.log(form);
         this.currentStep = 2;
@@ -200,7 +261,7 @@ var PageAccommodationEditComponent = (function () {
     };
     PageAccommodationEditComponent.prototype.onSubmitEditAccomodation3 = function (form) {
         console.log(form);
-        this.currentStep = 4;
+        this.currentStep = 3;
         this.statObjImages = true;
         //save Data!!!
         this.saveData();
@@ -210,48 +271,17 @@ var PageAccommodationEditComponent = (function () {
         console.log(form);
     };
     PageAccommodationEditComponent.prototype.saveData = function () {
-        // this.accommodations = this.accommodationService.getAccommodations();
-        // this.objAccommodation.id = this.accommodations.length + 1;
-        this.objAccommodation.lat = this.markers[0].lat,
-            this.objAccommodation.lng = this.markers[0].lng,
-            console.log('save - ID / Obj: ', this.objAccommodation.id, ' - ', this.objAccommodation);
-        // INSERT or UPDATE?
-        // let saveObj =  new Accommodation(
-        //   this.objAccommodation._id,
-        //   this.objAccommodation.title,
-        //   this.objAccommodation.description,
-        //   this.objAccommodation.town,
-        //   this.objAccommodation.thumbnail,
-        //   this.objAccommodation.avatar,
-        //   this.objAccommodation.type,
-        //   this.objAccommodation.numberOfGuests,
-        //   this.objAccommodation.price,
-        //   this.objAccommodation.lat,
-        //   this.objAccommodation.lng,
-        //   this.objAccommodation.numberOfBeds,
-        //   this.objAccommodation.numberOfBathrooms,
-        //   this.objAccommodation.zipcode,
-        //   this.objAccommodation.canton,
-        //   this.objAccommodation.country,
-        //   this.objAccommodation.category,
-        //   this.objAccommodation.setting,
-        //   this.objAccommodation.rules,
-        //   this.objAccommodation.rulesText,
-        //   this.objAccommodation.headerImage,
-        //   this.objAccommodation.images,
-        //   this.objAccommodation.username,
-        //   this.objAccommodation.distance,
-        //   this.objAccommodation.sel=false,
-        //   this.objAccommodation.ownerid
-        // );
-        console.log('save - list: ', this.accommodations);
-        //this.accommodationService.saveAccommodation(saveObj,'insert');
-    };
-    PageAccommodationEditComponent.prototype.handleUpload = function (data) {
         var _this = this;
-        this.zone.run(function () {
-            _this.response = data;
-            _this.progress = data.progress.percent / 100;
+        this.accommodationSaved = true; // No doubled savings
+        this.objAccommodation.lat = this.markers[0].lat;
+        this.objAccommodation.lng = this.markers[0].lng;
+        console.log('save: ', this.objAccommodation);
+        this.objAccommodation.ownerid = this.userId;
+        this.accommodationService.addOneAccommodation(this.objAccommodation).subscribe(function (acco) {
+            console.log(acco);
+        }, function (error) {
+            console.log(error);
+            _this.accommodationSaved = false;
         });
     };
     __decorate([

@@ -14,12 +14,14 @@ var LoginComponent = (function () {
         this.model = {};
         this.loading = false;
         this.userIsLoggedIn = false;
-        this.error = '';
+        this.errorMessage = '';
     }
     LoginComponent.prototype.ngOnInit = function () {
+        this.errorMessage = '';
     };
     LoginComponent.prototype.login = function () {
         var _this = this;
+        this.errorMessage = '';
         this.loading = true;
         this.loginService.login(this.model.username, this.model.password)
             .subscribe(function (result) {
@@ -31,23 +33,17 @@ var LoginComponent = (function () {
             }
             else {
                 // login failed
-                _this.error = 'Username or password is incorrect';
+                _this.errorMessage = 'Username or password is incorrect';
                 _this.loading = false;
             }
         }, function (error) {
-            _this.error = error;
+            _this.errorMessage = error;
             _this.loading = false;
         });
     };
     LoginComponent.prototype.changeToRegister = function () {
         this.sharedService.showLoginComponent(false); // Hide Login Component
         this.sharedService.showRegisterComponent(true); // Show Register Component
-    };
-    // cancel() {
-    //   this.sharedService.showLoginComponent(false); // Hide Login Component
-    // }
-    LoginComponent.prototype.ngOnDestroy = function () {
-        this.subscription.unsubscribe();
     };
     LoginComponent = __decorate([
         core_1.Component({

@@ -34,13 +34,25 @@ var PageListComponent = (function () {
     };
     PageListComponent.prototype.ngOnInit = function () {
         var _this = this;
-        /* this.route.params.forEach((params:Params) => {
-          let raLocation:string = params['location'];
-          this.locationTown = raLocation;
-        }); */
+        this.lat = this.locationService.getLocation('lat');
+        if (this.lat == 0) {
+            this.lat = Number(localStorage.getItem("latitude"));
+            this.lng = Number(localStorage.getItem("longitude"));
+            this.locationTown = localStorage.getItem("raLocation");
+        }
+        else {
+            this.lng = this.locationService.getLocation('lng');
+            this.locationTown = this.locationService.getLocation('town');
+        }
         this.accommodationService
             .getAccommodations()
-            .subscribe(function (res) { return _this.accommodations = res; }, function (error) { return _this.errorMessage = error; });
+            .subscribe(function (res) {
+            _this.accommodations = res;
+            // update distance within accommodations
+            for (var i in _this.accommodations) {
+                _this.accommodations[i].distance = _this.calcHaversineDistance([_this.lng, _this.lat], [_this.accommodations[i].lng, _this.accommodations[i].lat]);
+            }
+        }, function (error) { return _this.errorMessage = error; });
         console.log('Page List: ', this.accommodations);
         this.devHeight = window.innerHeight;
         this.mapHeight = this.devHeight - this.mapDiff;
@@ -56,18 +68,6 @@ var PageListComponent = (function () {
         this.colModLeft = 'col-md-6';
         this.colModRight = 'col-md-6';
         this.mtop = 315;
-        this.lat = this.locationService.getLocation('lat');
-        if (this.lat == 0) {
-            this.lat = Number(localStorage.getItem("latitude"));
-            this.lng = Number(localStorage.getItem("longitude"));
-            this.locationTown = localStorage.getItem("raLocation");
-        }
-        else {
-            this.lng = this.locationService.getLocation('lng');
-            this.locationTown = this.locationService.getLocation('town');
-        }
-        // add distances from reference location to the accommodation objects
-        this.setDistancesOfAccommodations(this.lng, this.lat);
     };
     PageListComponent.prototype.ngDoCheck = function () {
         // this.accommodations = this.accommodationService.getAccommodations();
@@ -100,12 +100,26 @@ var PageListComponent = (function () {
             this.lng = this.locationService.getLocation('lng');
             this.locationTown = this.locationService.getLocation('town');
         }
+        this.lat = this.locationService.getLocation('lat');
+        if (this.lat == 0) {
+            this.lat = Number(localStorage.getItem("latitude"));
+            this.lng = Number(localStorage.getItem("longitude"));
+            this.locationTown = localStorage.getItem("raLocation");
+        }
+        else {
+            this.lng = this.locationService.getLocation('lng');
+            this.locationTown = this.locationService.getLocation('town');
+        }
+        // add distances from reference location to the accommodation objects
+        for (var i in this.accommodations) {
+            this.accommodations[i].distance = this.calcHaversineDistance([this.lng, this.lat], [this.accommodations[i].lng, this.accommodations[i].lat]);
+            this.arrFilter[5] = this.objectFilter.radius;
+        }
         this.arrFilter[0] = this.objectFilter.acTypeValue;
         this.arrFilter[1] = this.objectFilter.numberOfGuestsFrom;
         this.arrFilter[2] = this.objectFilter.numberOfGuestsTo;
         this.arrFilter[3] = this.objectFilter.priceFrom;
         this.arrFilter[4] = this.objectFilter.priceTo;
-        this.arrFilter[5] = this.objectFilter.radius;
         if (this.arrFilter) {
             this.argFilter = '';
             for (var _i = 0, _a = this.arrFilter; _i < _a.length; _i++) {
@@ -149,8 +163,6 @@ var PageListComponent = (function () {
             this.lng = this.locationService.getLocation('lng');
             this.locationTown = this.locationService.getLocation('town');
         }
-        // add distances from reference location to the accommodation objects
-        this.setDistancesOfAccommodations(this.lng, this.lat);
     };
     PageListComponent.prototype.clButton = function (b) {
         switch (b) {
@@ -234,14 +246,9 @@ var PageListComponent = (function () {
             return '/img/ra_marker.png';
         }
     };
-    // update distance within accommodations
-    PageListComponent.prototype.setDistancesOfAccommodations = function (refLong, refLat) {
-        for (var i in this.accommodations) {
-            this.accommodations[i].distance = this.calcHaversineDistance([refLong, refLat], [this.accommodations[i].lng, this.accommodations[i].lat]);
-        }
-    };
     // formula for distances between 2 locations
     PageListComponent.prototype.calcHaversineDistance = function (coords1, coords2) {
+        console.log("Coordinates: ", coords1, coords2);
         function toRad(x) {
             return x * Math.PI / 180;
         }

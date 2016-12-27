@@ -21,7 +21,7 @@ export class SharedService {
   }
 
   private registerSource = new Subject<boolean>();
-  register$ = this.registerSource.asObservable();
+  showRegisterComponent$ = this.registerSource.asObservable();
   showRegisterComponent(registering: boolean) {
     this.registerSource.next(registering);
   }

@@ -36,6 +36,7 @@ var PasswordchangeComponent = (function () {
         });
     }
     PasswordchangeComponent.prototype.ngOnInit = function () {
+        this.passwordChanged = false;
         this.pwdModel = new password_1.Password();
         var lsUser = sessionStorage.getItem('rentAnyUser');
         if (lsUser != null) {
@@ -49,8 +50,11 @@ var PasswordchangeComponent = (function () {
             this.errorMessage = '';
             this.passwordChangeService.changePassword(this.pwdModel).subscribe(function (x) {
                 console.log(x);
-                _this.sharedService.showLoginComponent(true);
-                // this.router.navigate(['/login']);
+                _this.passwordChanged = true;
+                _this.loginService.logout();
+                _this.sharedService.userIsLoggedIn(false); // Show login in Header
+                _this.sharedService.showRegisterComponent(false); // Hide Register/User component
+                _this.sharedService.showLoginComponent(true); // Hide Login Component
             }, function (error) {
                 _this.errorMessage = error;
             });

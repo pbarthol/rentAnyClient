@@ -7,8 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var core_1 = require('@angular/core');
 var AccommodationTeaserComponent = (function () {
-    function AccommodationTeaserComponent() {
+    function AccommodationTeaserComponent(locationService) {
+        this.locationService = locationService;
     }
+    AccommodationTeaserComponent.prototype.ngOnInit = function () {
+        this.refTown = this.locationService.getLocation('town');
+        if (this.refTown == '') {
+            this.refTown = localStorage.getItem("raLocation");
+        }
+    };
     AccommodationTeaserComponent.prototype.mouseoverButton = function () {
         this.accommodation.sel = true;
     };

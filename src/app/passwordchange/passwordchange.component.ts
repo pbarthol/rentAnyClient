@@ -15,10 +15,11 @@ import { Password } from './models/password';
 })
 
 export class PasswordchangeComponent implements OnInit {
-  pwdForm: FormGroup;
-  errorMessage: string = '';
-  userid: string = '';
-  pwdModel: Password;
+  private pwdForm: FormGroup;
+  private errorMessage: string = '';
+  private passwordChanged: boolean;
+  private userid: string = '';
+  private pwdModel: Password;
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -45,6 +46,7 @@ export class PasswordchangeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.passwordChanged = false;
     this.pwdModel = new Password();
     let lsUser = sessionStorage.getItem('rentAnyUser');
     if (lsUser != null) {
@@ -61,8 +63,11 @@ export class PasswordchangeComponent implements OnInit {
       this.passwordChangeService.changePassword(this.pwdModel).subscribe(
         x => {
           console.log(x);
-          this.sharedService.showLoginComponent(true);
-          // this.router.navigate(['/login']);
+          this.passwordChanged = true;
+          this.loginService.logout();
+          this.sharedService.userIsLoggedIn(false); // Show login in Header
+          this.sharedService.showRegisterComponent(false); // Hide Register/User component
+          this.sharedService.showLoginComponent(true); // Hide Login Component
         },
         error => {
           this.errorMessage = error

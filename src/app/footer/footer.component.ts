@@ -9,46 +9,43 @@ import { SharedService } from '../services/shared.service';
 })
 export class FooterComponent implements OnInit {
   errorMessage: string;
+  private showRegister: boolean = false;
+  private showPwdChangeComponent: boolean = false;
   private userIsLogging: boolean = false;
   private userIsLoggedIn: boolean = false;
-  private registeringStarted: boolean;
   private changePassword: boolean;
-  subscription: Subscription;
-  subscription2: Subscription;
-  subscription3: Subscription;
-  subscription4: Subscription;
+  private subscription: Subscription;
+  private subscription2: Subscription;
+  private subscription3: Subscription;
+  private subscription4: Subscription;
 
   constructor(private sharedService: SharedService) {
 
     this.subscription = sharedService.userLogging$.subscribe(
       showLogging => {
-        if ( showLogging == true ) {
+        if ( showLogging == true )
           this.userIsLogging = true;
-          document.getElementById('openModalLoginButton').click();
-        }
-        // else {
-        //   document.getElementById('closeModalLoginButton').click();
-        //   this.userIsLogging = false;
-        //   // document.getElementById('modLogin').remove();
-        // }
+        else
+          this.userIsLogging = false;
       });
 
-    this.subscription2 = sharedService.register$.subscribe(
+    this.subscription2 = sharedService.showRegisterComponent$.subscribe(
       registering => {
-        this.registeringStarted = registering;
         if ( registering == true )
-          document.getElementById('openModalRegisterButton').click();
+          this.showRegister = true;
         else
-          document.getElementById('closeModalRegisterButton').click();
+          this.showRegister = false;
       });
 
     this.subscription3 = sharedService.changePassword$.subscribe(
       passwordChanging => {
         this.changePassword = passwordChanging;
         if ( passwordChanging == true )
-          document.getElementById('openModalChangePWDButton').click();
+          this.showPwdChangeComponent = true;
+          // document.getElementById('openModalChangePWDButton').click();
         else
-          document.getElementById('closeModalChangePWDButton').click();
+          this.showPwdChangeComponent = false;
+          // document.getElementById('closeModalChangePWDButton').click();
       });
 
     this.subscription4 = sharedService.userLogging$.subscribe(
@@ -62,22 +59,24 @@ export class FooterComponent implements OnInit {
       });
 
   }
+
   ngOnInit() {
   }
 
-  // closeLogin() {
-  //   this.sharedService.showLoginComponent(false);
-  //   // document.getElementById('closeModalLoginButton').click(); // Close Modal Component
-  // }
-
-  closeRegister() {
-    this.sharedService.showRegisterComponent(false);
-    // document.getElementById('closeModalRegisterButton').click(); // Close Modal Component
+  hideLoginComponent() {
+    this.userIsLogging = false;
+    this.sharedService.showLoginComponent(false);
+    // document.getElementById('closeModalLoginButton').click(); // Close Modal Component
   }
 
-  closeChangePassword() {
-    this.sharedService.showPWDChangeComponent(false);
-    this.sharedService.showRegisterComponent(true);
+  hideRegisterComponent() {
+    this.showRegister = false;
+    this.sharedService.showRegisterComponent(false);
+    // document.getElementById('closeModalLoginButton').click(); // Close Modal Component
+  }
 
+  hidePwdChangeComponent() {
+    this.showPwdChangeComponent = false;
+    this.sharedService.showPWDChangeComponent(false);
   }
 }
