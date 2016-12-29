@@ -21,7 +21,7 @@
       </div>
   </div>
 
-  <div *ngIf="error" class="alert alert-danger">{{errorMessage}}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
 
   <div *ngIf="!userIsLoggedIn" class="form-group">
     <button [disabled]="loading || userIsLoggedIn" [hidden]="userIsLoggedIn" class="btn btn-default" style="margin-right: 10px;">Anmelden</button>
