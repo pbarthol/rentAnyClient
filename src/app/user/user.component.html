@@ -43,7 +43,7 @@
         <div *ngIf="!newUser" class="form-group">
           <div>
             <!--<img [src]='avatarURL()' alt="...">-->
-            <img src="{{user.avatar}}"/>
+            <img src="{{user.avatar}}?t={{imageSuffix}}"/>
           </div>
           <br/>
           <div class="form-group">

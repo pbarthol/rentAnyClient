@@ -30,6 +30,7 @@ export class UserComponent implements OnInit {
   private avatarAlreadyUploaded = false;
   private action: string = "";
   private avatar: SafeStyle;
+  private imageSuffix: string;
   private errorMessage: string = '';
 
   // public uploader:FileUploader = new FileUploader({url: 'https://rentany-server.herokuapp.com/upload', queueLimit: 1});
@@ -76,6 +77,7 @@ export class UserComponent implements OnInit {
   ngOnInit() {
     this.errorMessage = "";
     this.registered = false;
+    this.imageSuffix = new Date().toString();
     let rentAnyUser = JSON.parse(sessionStorage.getItem('rentAnyUser'));
     if (rentAnyUser === undefined || rentAnyUser === null ) {
       // New User
